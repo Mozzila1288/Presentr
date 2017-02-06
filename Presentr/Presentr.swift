@@ -11,8 +11,8 @@ import UIKit
 
 struct PresentrConstants {
     struct Values {
-        static let defaultSideMargin: Float = 30.0
-        static let defaultHeightPercentage: Float = 0.66
+        static let defaultSideMargin: Float = 20.0
+        static let defaultHeightPercentage: Float = 0.5
     }
     struct Strings {
         static let alertTitle = "Alert"
