@@ -167,12 +167,12 @@ class PresentrController: UIPresentationController, UIAdaptivePresentationContro
     }
     
     private func registerKeyboardObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(PresentrController.keyboardWasShown(notification:)), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(PresentrController.keyboardWasShown(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(PresentrController.keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
     }
     
     private func removeObservers() {
-        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
     }
     
@@ -243,6 +243,11 @@ class PresentrController: UIPresentationController, UIAdaptivePresentationContro
             let translatedFrame = keyboardTranslationType.getTranslationFrame(keyboardFrame: keyboardFrame, presentedFrame: presentedFrame)
             if translatedFrame != presentedFrame {
                 UIView.animate(withDuration: notification.keyboardAnimationDuration() ?? 0.5, animations: {
+                    guard let rawValue = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? Int,
+                        let curve = UIViewAnimationCurve(rawValue: rawValue) else {
+                        return
+                    }
+                    UIView.setAnimationCurve(curve)
                     self.presentedView?.frame = translatedFrame
                 })
             }
@@ -255,6 +260,11 @@ class PresentrController: UIPresentationController, UIAdaptivePresentationContro
             let presentedFrame = frameOfPresentedViewInContainerView
             if self.presentedView?.frame !=  presentedFrame {
                 UIView.animate(withDuration: notification.keyboardAnimationDuration() ?? 0.5, animations: {
+                    guard let rawValue = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? Int,
+                        let curve = UIViewAnimationCurve(rawValue: rawValue) else {
+                            return
+                    }
+                    UIView.setAnimationCurve(curve)
                     self.presentedView?.frame = presentedFrame
                 })
             }
